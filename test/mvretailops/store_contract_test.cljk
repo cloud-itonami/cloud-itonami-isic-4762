@@ -1,6 +1,6 @@
 (ns mvretailops.store-contract-test
   "Contract tests for `mvretailops.store/Store` protocol."
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kotoba.test :refer [deftest is testing]]
             [mvretailops.store :as store]))
 
 (deftest mem-store-store-lookup
