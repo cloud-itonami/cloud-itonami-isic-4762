@@ -1,0 +1,33 @@
+;; What this vertical's robot physically does, declared for
+;; kotoba.robotics.process (kotoba-lang/robotics). `kbb -M:dev:physics` runs it.
+;;
+;; README "Robotics premise": a robot may perform the physical work of a
+;; record / video shop (ISIC 4762) -- shelfing, picking, restocking. Here: an
+;; arm moving a crate of LPs into the browser bins, and the heat a boxed
+;; stack of vinyl records takes during a summer delivery (vinyl warps when it
+;; gets warm, so the stock's temperature is part of handling it).
+;;
+;; Every number without a cited source is marked `estimate` in its :basis.
+;; Replacing an estimate with a sourced value is this bot's growth work.
+{:physics/schema "itonami.physical-ai.spec.v1"
+ :repo "cloud-itonami/cloud-itonami-isic-4762"
+ :cases
+ [{:id :lp-crate-to-browser-bin
+   :kind :manipulator
+   :procedure "arm lifts a crate of LPs from the restock cart and sets it into a browser bin"
+   :params {:l1-m 0.50 :l2-m 0.45 :m1-kg 4.5 :m2-kg 3.0
+            :from [0.30 0.60] :to [0.70 0.20] :duration-s 2.5 :steps 500}
+   :sweep {:param :payload-kg :values [2.0 5.0 9.0 14.0 20.0]}
+   :quantity :peak-tau1-nm
+   :limit {:max 90.0 :basis "estimate: continuous shoulder torque of a ~7 kg-payload collaborative arm; 50 LPs at ~0.18 kg each is ~9 kg"}
+   :boundary {:lo 0.5 :hi 40.0}}
+  {:id :vinyl-box-in-delivery-van
+   :kind :thermal
+   :procedure "a carton of stacked LPs rides 4 hours in a closed delivery van; half the 0.10 m stack is modelled, heated from its outer face, with the mid-plane as a symmetry face"
+   :params {:thickness-m 0.05 :conductivity-w-mk 0.12 :density-kg-m3 1000.0 :specific-heat-j-kgk 1100.0
+            :t0-c 22.0 :h-front-w-m2k 8.0 :h-back-w-m2k 0.0 :duration-s 14400.0 :nodes 21
+            :threshold-c 45.0}
+   :sweep {:param :t-hot-c :values [30.0 40.0 50.0 60.0 70.0]}
+   :quantity :peak-back-c
+   :limit {:max 45.0 :basis "estimate: keep the record core below ~45 C to avoid warping; the stack's conductivity/density (PVC discs with air gaps and card sleeves) are estimates too"}
+   :boundary {:lo 30.0 :hi 90.0}}]}
