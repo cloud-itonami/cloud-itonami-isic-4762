@@ -1,6 +1,6 @@
 (ns mvretailops.phase-test
   "Unit tests of `mvretailops.phase` rollout logic."
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kotoba.test :refer [deftest is testing]]
             [mvretailops.phase :as phase]))
 
 (deftest phase-0-read-only
